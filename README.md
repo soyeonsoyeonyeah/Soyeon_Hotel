@@ -1,4 +1,5 @@
 # Soyeon Hotel
+<img src="https://github.com/soyeonsoyeonyeah/Soyeon_Hotel/raw/main/images/soyeon_hotel.png" alt="Hotel Reservation Screenshot" width="500"/>
 
 ## Project Overview
 Soyeon Hotel is a web application that allows users to easily browse available rooms, make reservations, and manage their bookings. This project was built with a focus on seamless user experience and a robust back-end infrastructure, utilizing a combination of modern technologies and industry best practices.

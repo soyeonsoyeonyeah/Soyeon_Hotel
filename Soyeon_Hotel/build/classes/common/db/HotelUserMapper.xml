@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HotelUserMapper">
+
+	<select id="getUserById" parameterType="String"
+		resultType="vo.HotelUserVO">
+		SELECT 
+		user_id as userId,
+		 username,
+		 email,
+		 password,
+		 phone_number as phoneNumber,
+		 address,
+		 user_type as userType
+		FROM ALLUSERS@HAPPY_DB
+		WHERE user_id = #{id}
+	</select>
+
+
+	<insert id="insertUser" parameterType="vo.HotelUserVO">
+		INSERT INTO Hotel_User (user_id, username, email, password, phone_number,
+		address)
+		VALUES (#{userId}, #{username}, #{email}, #{password}, #{phoneNumber},
+		#{address})
+	</insert>
+
+</mapper>

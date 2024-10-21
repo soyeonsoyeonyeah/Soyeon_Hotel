@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="paymentMapper">
+
+     <!-- 예약 정보 삽입 -->
+    <insert id="insertReservation" parameterType="reservationVO">
+        INSERT INTO RESERVATION@HAPPY_DB (BOOKING_ID, user_id, room_id, check_in_date, check_out_date, no_of_nights, total_price, status)
+        VALUES (
+        	concat('SOYEON_GENIUS',hotel_reservation_seq.nextval@HAPPY_DB),
+            #{userId},
+            #{roomId},
+            #{checkInDate},
+            #{checkOutDate},
+            #{numberOfNights},
+            #{totalPrice},
+            #{status}
+        )
+    </insert>
+    
+    
+    
+    
+
+</mapper>

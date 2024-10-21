@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reservationMapper">
+
+		<!-- 아이디를 받아서 해당 아이디의 예약 정보 리턴 -->
+		
+    <!-- <select id="bookings" parameterType="String" resultType="reservationVO">
+        SELECT *
+		FROM Reservation r
+		INNER JOIN Hotel_User u ON r.user_id = u.user_id
+		WHERE u.user_id = #{userId}
+    </select>
+    -->
+   	<resultMap type="reservationVO" id="resultMap1">
+    
+  		<result column="BOOKING_ID" property="bookingId"/>
+  		<result column="USER_ID" property="userId"/>
+  		<result column="CHECK_IN_DATE" property="checkInDate"/>
+  		<result column="CHECK_OUT_DATE" property="checkOutDate"/>
+  	    <result column="NO_OF_NIGHTS" property="numberOfNights"/>
+    	<result column="TOTAL_PRICE" property="totalPrice"/>
+    	<result column="RESERVATION_DATE" property="reservationDate"/>
+    	<result column="PHOTO_URL" property="rooms.roomType.photoUrl"/>
+        <result column="ROOM_TYPE" property="rooms.roomType.roomType"/>
+    
+    </resultMap>
+    <!--  
+    <select id="bookings" parameterType="String" resultMap="resultMap1">
+    
+    SELECT re.BOOKING_ID, re.USER_ID, TO_CHAR(re.CHECK_IN_DATE, 'YYYY-MM-DD') AS CHECK_IN_DATE, TO_CHAR(re.CHECK_OUT_DATE, 'YYYY-MM-DD') AS CHECK_OUT_DATE,
+	   re.NO_OF_NIGHTS, re.TOTAL_PRICE, re.RESERVATION_DATE, re.STATUS,
+	   rt.ROOM_TYPE
+	FROM RESERVATION re, rooms ro,ROOMTYPES rt
+	WHERE re.ROOM_ID =ro.ROOM_ID 
+	      AND ro.ROOM_TYPE_CD =rt.ROOM_TYPE_CD 
+	      AND re.USER_ID = #{userId}
+    
+    </select>
+    -->
+    
+    <select id="bookings" parameterType="reservationVO" resultMap="resultMap1">
+    
+    SELECT re.BOOKING_ID, re.USER_ID, TO_CHAR(re.CHECK_IN_DATE, 'YYYY-MM-DD') AS CHECK_IN_DATE, TO_CHAR(re.CHECK_OUT_DATE, 'YYYY-MM-DD') AS CHECK_OUT_DATE,
+	   re.NO_OF_NIGHTS, re.TOTAL_PRICE, re.RESERVATION_DATE, re.STATUS,
+	   rt.ROOM_TYPE, rt.PHOTO_URL
+	FROM RESERVATION@HAPPY_DB re, rooms ro,ROOMTYPES rt
+	WHERE re.ROOM_ID =ro.ROOM_ID 
+	      AND ro.ROOM_TYPE_CD =rt.ROOM_TYPE_CD 
+	      AND re.USER_ID = #{userId}
+   ORDER BY RESERVATION_DATE  DESC	      
+   OFFSET (#{page}-1)*3 ROWS FETCH NEXT 3 ROWS ONLY 		
+    </select>
+    
+        <select id="allBookings" parameterType="Integer" resultMap="resultMap1">
+    
+         SELECT re.BOOKING_ID, re.USER_ID, TO_CHAR(re.CHECK_IN_DATE, 'YYYY-MM-DD') AS CHECK_IN_DATE,
+               TO_CHAR(re.CHECK_OUT_DATE, 'YYYY-MM-DD') AS CHECK_OUT_DATE,
+               re.NO_OF_NIGHTS, re.TOTAL_PRICE, re.RESERVATION_DATE, re.STATUS,
+               rt.ROOM_TYPE, rt.PHOTO_URL
+        FROM RESERVATION@HAPPY_DB re
+                 INNER JOIN rooms ro ON re.ROOM_ID = ro.ROOM_ID
+                 INNER JOIN ROOMTYPES rt ON ro.ROOM_TYPE_CD = rt.ROOM_TYPE_CD
+   ORDER BY RESERVATION_DATE  DESC	      
+   OFFSET (#{page}-1)*3 ROWS FETCH NEXT 3 ROWS ONLY 		
+    </select>
+    
+    <select id="findRoomType" parameterType="String" resultType="String">
+		SELECT rt.room_type
+		FROM Reservation r
+		INNER JOIN Rooms ro ON r.room_id = ro.room_id
+		INNER JOIN RoomTypes rt ON ro.room_type_cd = rt.room_type_cd
+		WHERE r.USER_ID = #{id}
+    </select>
+    
+    
+    <update id="cancellation" parameterType="String">
+			 UPDATE Reservation
+			SET status = 'cancelled'
+			WHERE Booking_ID = #{bookingId}
+    	
+    
+    </update>
+    
+    
+    <select id ="count" parameterType="String" resultType="int">
+    		
+				    SELECT count(*)
+				FROM RESERVATION r 
+				WHERE USER_ID = #{id}
+    </select>
+    
+    
+    <!-- 관리자용 호텔 예약시 필요한 count  -->
+        <select id ="countForAllBookings" resultType="int">
+    		
+				    SELECT count(*)
+				FROM RESERVATION r 
+    </select>
+
+</mapper>

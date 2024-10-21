@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="availabilityMapper">
+
+	<resultMap type="roomTypeVO" id="roomTypeVO">
+		<result column="room_type_cd" property="roomTypeCd"></result>
+		<result column="room_type" property="roomType"></result>
+		<result column="bed_type" property="bedType"></result>
+		<result column="room_size" property="roomSize"></result>
+		<result column="photo_url" property="photoUrl"></result>
+	</resultMap>
+
+	<!-- 예약되지 않은 방들의 타입 조회 초안 -->
+	<select id="getAvailableRoomTypes" resultMap="roomTypeVO">
+		SELECT DISTINCT rt.*
+		FROM ROOMS r
+		LEFT JOIN RESERVATION res ON r.room_id = res.room_id
+		JOIN ROOMTYPES rt ON r.ROOM_TYPE_CD = rt.ROOM_TYPE_CD
+		WHERE res.room_id IS NULL
+	</select>
+	
+	<!-- 날짜별로 예약이 가능한 방을 조회 -->
+	<select id="getAvailableRoomTypesByDate" parameterType="reservationVO" resultMap="roomTypeVO">
+		SELECT DISTINCT rt.*
+		FROM RoomTypes rt
+		JOIN Rooms r ON rt.room_type_cd = r.room_type_cd
+		WHERE r.room_id NOT IN (
+		SELECT res.room_id
+		FROM Reservation res
+		WHERE (
+		(res.check_in_date &lt;= TO_DATE( #{checkInDate}, 'YYYY/MM/DD') AND TO_DATE(#{checkInDate},
+		'YYYY/MM/DD') &lt; res.check_out_date)
+		OR (TO_DATE( #{checkInDate}, 'YYYY/MM/DD') &lt;= res.check_in_date AND
+		res.check_in_date &lt; TO_DATE(#{checkOutDate}, 'YYYY/MM/DD'))
+		)
+		AND res.status != 'cancelled'
+		)
+	</select>
+
+
+	<!-- 특정 room_type_cd로 방 타입 조회 -->
+	<select id="getRoomTypeByRoomTypeCd"
+		parameterType="java.lang.String" resultType="roomTypeVO">
+		SELECT * FROM RoomTypes WHERE room_type_cd = #{roomTypeCd}
+	</select>
+
+
+
+
+
+</mapper>

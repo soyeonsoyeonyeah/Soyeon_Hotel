@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reviewsMapper">
+
+   	<resultMap type="reviewsVO" id="resultMap2">
+    
+  		<result column="review_id" property="reviewId"/>
+  		<result column="user_id" property="userId"/>
+  		<result column="room_id" property="roomId"/>
+  		<result column="review_text" property="reviewText"/>
+  	    <result column="rating" property="rating"/>
+    	<result column="created_at" property="createdAt"/>
+    	<result column="room_type" property="roomType"/>
+    	
+    
+    </resultMap>
+    
+    <insert id="addReview" parameterType="reviewsVO">
+        INSERT INTO reviews (user_id, review_text, room_type)
+        VALUES (#{userId}, #{reviewText}, #{roomType})
+    </insert>
+    
+    <select id="getReviewsByRoomType" resultMap="resultMap2">
+        SELECT user_id, review_text, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at
+        FROM reviews
+        WHERE room_type = #{roomType}
+        ORDER BY created_at DESC
+    </select>
+    
+</mapper>
+
+
